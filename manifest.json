@@ -1,7 +1,7 @@
 {
   "id": "my-focus-tracker",
   "name": "Focus Tracker",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "minAppVersion": "1.4.0",
   "description": "Таймер глубокой работы и сессий фокуса с интеграцией целей дня и записью времени в ежедневник.",
   "author": "Mersinho Hecke",
