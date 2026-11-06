@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "build": "node node_modules/typescript/bin/tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
     "version": "node version-bump.mjs && git add manifest.json versions.json",
     "lint": "eslint .",
     "pack": "node -e 'import(\"fs\").then(fs => { const files = [\"manifest.json\", \"versions.json\", \"package.json\", \"styles.css\"]; const walk = d => fs.existsSync(d) && fs.readdirSync(d, { withFileTypes: true }).forEach(e => { const p = `${d}/${e.name}`; e.isDirectory() ? walk(p) : files.push(p); }); walk(\"src\"); let out = \"# Plugin Context\\n\"; for (const f of files) { if (fs.existsSync(f)) { const ext = f.split(\".\").pop(); out += `\\n## ${f}\\n\\`\\`\\`${ext}\\n${fs.readFileSync(f, \"utf8\")}\\n\\`\\`\\`\\n`; } } fs.writeFileSync(\"plugin-context.md\", out); console.log(\"Done: plugin-context.md\"); })'"
