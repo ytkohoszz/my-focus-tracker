@@ -42,14 +42,11 @@ function extractISODate(raw: unknown): string {
 
 export default class MyFocusTrackerPlugin extends Plugin {
   public settings: FocusTrackerSettings = DEFAULT_SETTINGS;
-  public session: ActiveFocusSession = {
+public session: ActiveFocusSession = {
     isRunning: false,
     project: "3D",
-    durationMinutes: 45,
     startAt: 0,
-    endAt: null,
   };
-  private bgWatchInterval: number | null = null;
   private isFinishingSession = false;
 
   async onload(): Promise<void> {
@@ -68,25 +65,10 @@ export default class MyFocusTrackerPlugin extends Plugin {
       },
     });
 
-    // Фоновая проверка истечения фиксированного таймера (даже если модальное окно закрыто)
-    this.bgWatchInterval = window.setInterval(() => {
-      if (
-        this.session.isRunning &&
-        this.session.endAt !== null &&
-        Date.now() >= this.session.endAt
-      ) {
-        void this.completeCurrentSession();
-      }
-    }, 1000);
-
-    (window as unknown as Record<string, unknown>).__myFocusTracker = this;
+(window as unknown as Record<string, unknown>).__myFocusTracker = this;
   }
 
   onunload(): void {
-    if (this.bgWatchInterval !== null) {
-      window.clearInterval(this.bgWatchInterval);
-      this.bgWatchInterval = null;
-    }
     delete (window as unknown as Record<string, unknown>).__myFocusTracker;
   }
 
@@ -97,10 +79,17 @@ export default class MyFocusTrackerPlugin extends Plugin {
   public loadSessionState(): void {
     try {
       const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
-      if (raw) {
+if (raw) {
         const parsed = JSON.parse(raw) as Partial<ActiveFocusSession>;
         if (parsed && typeof parsed === "object") {
-          this.session = { ...this.session, ...parsed };
+          this.session = {
+            isRunning: Boolean(parsed.isRunning),
+            project:
+              typeof parsed.project === "string" && parsed.project.trim()
+                ? parsed.project
+                : this.session.project,
+            startAt: typeof parsed.startAt === "number" ? parsed.startAt : 0,
+          };
         }
       }
     } catch {
@@ -286,14 +275,10 @@ export default class MyFocusTrackerPlugin extends Plugin {
       const elapsedHours = Math.round((elapsedMinutes / 60) * 10) / 10;
       const project = s.project.trim() || this.settings.defaultProject || "Фокус";
 
-      this.playNotificationBeep();
-
-      this.session = {
+this.session = {
         isRunning: false,
         project,
-        durationMinutes: s.durationMinutes,
         startAt: 0,
-        endAt: null,
       };
       this.saveSessionState();
 
@@ -302,9 +287,7 @@ export default class MyFocusTrackerPlugin extends Plugin {
         elapsedMinutes
       );
 
-      new Notice(
-        `🎉 Фокус «${project}»: +${elapsedMinutes} мин (всего за день по цели: ${goalTotalMinutes} мин)`
-      );
+      new Notice(`Фокус «${project}»: +${elapsedMinutes} мин`);
 
       return { project, elapsedMinutes, elapsedHours, goalTotalMinutes };
     } finally {

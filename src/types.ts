@@ -3,9 +3,7 @@ import type { TFile } from "obsidian";
 export interface ActiveFocusSession {
   isRunning: boolean;
   project: string;
-  durationMinutes: number; // 0 для секундомера
   startAt: number; // timestamp (мс)
-  endAt: number | null; // null для бесконечного секундомера
 }
 
 export interface DailyGoalItem {
