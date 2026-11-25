@@ -12,6 +12,20 @@ import {
 const SESSION_STORAGE_KEY = "mft_active_focus_session_v1";
 const FOCUS_LINE_REGEX =
   /^-\s*\(время::\s*([^)]+)\)\s*\(длительность_мин::\s*(\d+(?:[.,]\d+)?)\)\s*\(проект::\s*([^)]+)\)/;
+const MONTH_NAMES_RU = [
+  "январь",
+  "февраль",
+  "март",
+  "апрель",
+  "май",
+  "июнь",
+  "июль",
+  "август",
+  "сентябрь",
+  "октябрь",
+  "ноябрь",
+  "декабрь",
+] as const;
 
 export function getLocalDateISO(): string {
   const now = new Date();
@@ -179,6 +193,51 @@ if (raw) {
     return bestMatch;
   }
 
+  private async ensureFolderPath(folderPath: string): Promise<void> {
+    const parts = folderPath.split("/").filter(Boolean);
+    let current = "";
+    for (const part of parts) {
+      current = current ? `${current}/${part}` : part;
+      if (!this.app.vault.getAbstractFileByPath(current)) {
+        try {
+          await this.app.vault.createFolder(current);
+        } catch {
+          // Папка могла быть создана параллельно
+        }
+      }
+    }
+  }
+
+  /**
+   * Возвращает заметку сегодняшнего дня или создаёт её в Ежедневник/ГГГГ/ММ - месяц/ГГГГ-ММ-ДД.md.
+   */
+  public async ensureTodayDailyNote(): Promise<TFile> {
+    const existing = this.findTodayDailyNote();
+    if (existing) return existing;
+
+    const now = new Date();
+    const year = String(now.getFullYear());
+    const monthIdx = now.getMonth();
+    const monthNum = String(monthIdx + 1).padStart(2, "0");
+    const monthName = MONTH_NAMES_RU[monthIdx] ?? "январь";
+    const todayISO = getLocalDateISO();
+
+    const folderPath = `Ежедневник/${year}/${monthNum} - ${monthName}`;
+    const filePath = `${folderPath}/${todayISO}.md`;
+
+    await this.ensureFolderPath(folderPath);
+
+    const byPath = this.app.vault.getAbstractFileByPath(filePath);
+    if (byPath instanceof TFile) {
+      return byPath;
+    }
+
+    return await this.app.vault.create(
+      filePath,
+      `---\nдата: ${todayISO}\n---\n`
+    );
+  }
+
   /**
    * Извлекает список целей дня (`цели_дня`) и накопленные минуты фокуса по каждой задаче за сегодня.
    */
@@ -308,13 +367,16 @@ this.session = {
     const addMin = Math.max(1, Math.round(minutes));
 
     const ctx = await this.getTodayFocusContext();
-    const targetFile = ctx.file;
+    let targetFile = ctx.file;
 
     if (!targetFile) {
-      new Notice(
-        "Заметка на сегодня в папке «Ежедневник» не найдена. Создай запись дня."
-      );
-      return addMin;
+      try {
+        targetFile = await this.ensureTodayDailyNote();
+      } catch (e) {
+        console.error("Error creating today's daily note:", e);
+        new Notice("Не удалось создать заметку дня в папке «Ежедневник».");
+        return addMin;
+      }
     }
 
     const prevGoalMin = ctx.totalsByGoal[cleanProject] ?? 0;

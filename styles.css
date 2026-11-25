@@ -1,68 +1,155 @@
+/* ===== Velocity 2.1.0 — Focus Tracker ===== */
+
+.theme-dark .modal.mod-focus-tracker {
+  --mft-hue: var(--bhue, 220);
+  --mft-surface: oklch(0.20 0.012 var(--mft-hue) / 0.84);
+  --mft-island: oklch(0.25 0.014 var(--mft-hue) / 0.58);
+  --mft-island-hover: oklch(0.29 0.016 var(--mft-hue) / 0.72);
+  --mft-input-bg: oklch(0.16 0.010 var(--mft-hue) / 0.64);
+  --mft-ring: oklch(0.96 0.006 var(--mft-hue) / 0.12);
+  --mft-ring-strong: oklch(0.96 0.006 var(--mft-hue) / 0.22);
+  --mft-accent-soft: color-mix(in oklch, var(--interactive-accent) 18%, transparent);
+  --mft-accent-ring: color-mix(in oklch, var(--interactive-accent) 54%, transparent);
+  --mft-danger-soft: oklch(0.62 0.19 25 / 0.14);
+  --mft-danger-ring: oklch(0.66 0.19 25 / 0.34);
+  --mft-danger-text: oklch(0.75 0.17 25);
+  --mft-shadow: 0 24px 56px oklch(0.05 0.01 var(--mft-hue) / 0.48),
+    inset 0 0.5px 0 oklch(0.98 0 0 / 0.10);
+}
+
+.theme-light .modal.mod-focus-tracker {
+  --mft-hue: var(--bhue, 220);
+  --mft-surface: oklch(0.97 0.006 var(--mft-hue) / 0.88);
+  --mft-island: oklch(0.93 0.008 var(--mft-hue) / 0.70);
+  --mft-island-hover: oklch(0.89 0.010 var(--mft-hue) / 0.80);
+  --mft-input-bg: oklch(0.99 0.003 var(--mft-hue) / 0.82);
+  --mft-ring: oklch(0.20 0.010 var(--mft-hue) / 0.10);
+  --mft-ring-strong: oklch(0.20 0.010 var(--mft-hue) / 0.18);
+  --mft-accent-soft: color-mix(in oklch, var(--interactive-accent) 14%, transparent);
+  --mft-accent-ring: color-mix(in oklch, var(--interactive-accent) 46%, transparent);
+  --mft-danger-soft: oklch(0.58 0.20 25 / 0.10);
+  --mft-danger-ring: oklch(0.56 0.20 25 / 0.28);
+  --mft-danger-text: oklch(0.52 0.20 25);
+  --mft-shadow: 0 20px 48px oklch(0.20 0.01 var(--mft-hue) / 0.16),
+    inset 0 0.5px 0 oklch(1 0 0 / 0.70);
+}
+
 .modal.mod-focus-tracker {
-  width: 90vw !important;
-  max-width: 360px !important;
-  padding: 20px 22px 22px !important;
-  border-radius: 22px !important;
-  background: color-mix(in srgb, var(--background-secondary) 76%, transparent) !important;
+  width: 92vw !important;
+  max-width: 372px !important;
+  padding: 18px 20px 20px !important;
+  border-radius: 24px !important;
+  -electron-corner-smoothing: 60%;
+  background: var(--mft-surface) !important;
   backdrop-filter: blur(28px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
-  border: 1px solid color-mix(in srgb, var(--text-normal) 10%, transparent) !important;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  border: none !important;
+  box-shadow: 0 0 0 0.5px var(--mft-ring), var(--mft-shadow) !important;
 }
 
 .mft-is-hidden {
   display: none !important;
 }
 
+/* Шапка */
 .mft-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding-right: 28px;
-  margin-bottom: 6px;
+  padding-right: 30px;
+  margin-bottom: 12px;
+}
+
+.mft-head-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-muted);
+}
+
+.mft-head-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  opacity: 0.85;
+}
+
+.mft-head-icon svg {
+  width: 15px;
+  height: 15px;
 }
 
 .mft-head h2 {
   margin: 0 !important;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 0.92rem;
+  font-weight: 550;
+  font-variation-settings: "wght" 550;
+  letter-spacing: -0.015em;
   color: var(--text-muted);
 }
 
 .mft-head-badge {
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 3px 9px;
+  font-size: 0.74rem;
+  font-weight: 550;
+  font-variation-settings: "wght" 550;
+  padding: 4px 10px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--text-normal) 6%, transparent);
-  border: 1px solid color-mix(in srgb, var(--text-normal) 8%, transparent);
+  background: var(--mft-island);
+  box-shadow: 0 0 0 0.5px var(--mft-ring);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
 
-.mft-timer-display {
+/* Остров секундомера */
+.mft-timer-island {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 18px 8px 22px;
+  gap: 6px;
+  padding: 22px 14px 18px;
+  margin-bottom: 12px;
+  border-radius: 18px;
+  -electron-corner-smoothing: 60%;
+  background: var(--mft-island);
+  box-shadow: 0 0 0 0.5px var(--mft-ring);
 }
 
 .mft-time-digits {
-  font-size: 4rem;
-  font-weight: 600;
+  font-size: 3.75rem;
+  font-weight: 560;
+  font-variation-settings: "wght" 560;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.04em;
   color: var(--text-normal);
   line-height: 1;
-  transition: color 0.25s ease, text-shadow 0.25s ease;
+  transition: color 0.2s ease, text-shadow 0.25s ease;
 }
 
 .mft-time-digits.is-running {
-  text-shadow: 0 0 28px color-mix(in srgb, var(--interactive-accent) 30%, transparent);
+  text-shadow: 0 0 26px color-mix(in oklch, var(--interactive-accent) 28%, transparent);
 }
 
+.mft-timer-status {
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-variation-settings: "wght" 500;
+  color: var(--text-faint);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.mft-timer-status.is-running {
+  color: var(--text-muted);
+}
+
+/* Чипы целей дня */
 .mft-goals-section {
   margin-bottom: 12px;
 }
@@ -71,8 +158,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  max-height: 112px;
+  max-height: 116px;
   overflow-y: auto;
+  padding: 1px;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -85,18 +173,20 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 30px;
+  min-height: 32px;
   padding: 4px 11px;
   border-radius: 999px;
   font-size: 0.78rem;
   font-weight: 500;
-  background: color-mix(in srgb, var(--text-normal) 6%, transparent);
-  border: 1px solid color-mix(in srgb, var(--text-normal) 8%, transparent);
+  font-variation-settings: "wght" 500;
+  background: var(--mft-island);
+  border: none !important;
+  box-shadow: 0 0 0 0.5px var(--mft-ring) !important;
   color: var(--text-normal);
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.16s ease, border-color 0.16s ease, transform 0.12s ease;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
 
 .mft-goal-chip:active {
@@ -105,14 +195,28 @@
 
 @media (hover: hover) {
   .mft-goal-chip:hover {
-    background: color-mix(in srgb, var(--text-normal) 10%, transparent);
+    background: var(--mft-island-hover);
   }
 }
 
 .mft-goal-chip.is-active {
-  background: color-mix(in srgb, var(--interactive-accent) 20%, transparent);
-  border-color: color-mix(in srgb, var(--interactive-accent) 55%, transparent);
-  font-weight: 600;
+  background: var(--mft-accent-soft);
+  box-shadow: 0 0 0 0.5px var(--mft-accent-ring) !important;
+  font-weight: 560;
+  font-variation-settings: "wght" 560;
+}
+
+.mft-goal-chip-check {
+  display: inline-flex;
+  align-items: center;
+  width: 12px;
+  height: 12px;
+  color: var(--text-muted);
+}
+
+.mft-goal-chip-check svg {
+  width: 12px;
+  height: 12px;
 }
 
 .mft-goal-chip-title.is-done {
@@ -121,88 +225,134 @@
 }
 
 .mft-goal-chip-time {
-  font-size: 0.68rem;
-  font-weight: 600;
+  font-size: 0.69rem;
+  font-weight: 550;
+  font-variation-settings: "wght" 550;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
 
+/* Поле ввода задачи */
 .mft-input-group {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .mft-project-input {
   width: 100% !important;
   height: 42px !important;
   font-size: 0.9rem !important;
-  border-radius: 12px !important;
-  background: color-mix(in srgb, var(--background-primary) 52%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--text-normal) 10%, transparent) !important;
+  font-weight: 500 !important;
+  border-radius: 13px !important;
+  -electron-corner-smoothing: 60%;
+  background: var(--mft-input-bg) !important;
+  border: none !important;
+  box-shadow: 0 0 0 0.5px var(--mft-ring) !important;
   color: var(--text-normal) !important;
   padding: 0 14px !important;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease !important;
+  transition: box-shadow 0.16s ease, opacity 0.16s ease !important;
 }
 
 .mft-project-input:focus {
-  border-color: color-mix(in srgb, var(--interactive-accent) 65%, transparent) !important;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--interactive-accent) 18%, transparent) !important;
+  box-shadow: 0 0 0 1px var(--mft-accent-ring), 0 0 0 3.5px var(--mft-accent-soft) !important;
 }
 
 .mft-project-input:disabled {
-  opacity: 0.65;
+  opacity: 0.6;
 }
 
+/* Кнопки действий */
 .mft-actions-row {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.mft-btn-main {
-  flex: 2;
-  min-height: 44px;
-  height: 44px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  border-radius: 12px;
+.mft-btn-main,
+.mft-btn-sec {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  height: 42px;
+  border-radius: 13px !important;
+  -electron-corner-smoothing: 60%;
+  border: none !important;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.12s ease, opacity 0.16s ease;
+  transition: transform 0.1s ease, opacity 0.15s ease, background 0.15s ease;
 }
 
-.mft-btn-main:active {
-  transform: scale(0.98);
+.mft-btn-main {
+  flex: 2;
+  font-size: 0.92rem;
+  font-weight: 560;
+  font-variation-settings: "wght" 560;
+  letter-spacing: -0.01em;
 }
 
 .mft-btn-sec {
   flex: 1;
-  min-height: 44px;
-  height: 44px;
   font-size: 0.86rem;
-  font-weight: 600;
-  border-radius: 12px;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.12s ease, background 0.16s ease;
+  font-weight: 550;
+  font-variation-settings: "wght" 550;
 }
 
+.mft-btn-main:active,
 .mft-btn-sec:active {
   transform: scale(0.98);
 }
 
+.mft-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+}
+
+.mft-btn-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
 .mft-btn-sec.is-danger {
-  background: color-mix(in srgb, #e5484d 12%, transparent);
-  border: 1px solid color-mix(in srgb, #e5484d 26%, transparent);
-  color: #ff6b6b;
+  background: var(--mft-danger-soft) !important;
+  box-shadow: 0 0 0 0.5px var(--mft-danger-ring) !important;
+  color: var(--mft-danger-text) !important;
+}
+
+/* Тач-адаптация: iPadOS / iOS / coarse pointer */
+body.is-mobile .mft-goal-chip,
+body.is-tablet .mft-goal-chip {
+  min-height: 38px;
+  padding: 6px 13px;
+  font-size: 0.82rem;
+}
+
+body.is-mobile .mft-project-input,
+body.is-tablet .mft-project-input {
+  height: 46px !important;
+  font-size: 0.95rem !important;
+}
+
+body.is-mobile .mft-btn-main,
+body.is-mobile .mft-btn-sec,
+body.is-tablet .mft-btn-main,
+body.is-tablet .mft-btn-sec {
+  min-height: 46px;
+  height: 46px;
 }
 
 @media (pointer: coarse) {
   .mft-goal-chip {
-    min-height: 36px;
+    min-height: 38px;
     padding: 6px 13px;
+  }
+
+  .mft-project-input {
+    height: 46px !important;
   }
 
   .mft-btn-main,

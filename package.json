@@ -1,13 +1,13 @@
 {
     "name":  "obsidian-sample-plugin",
-    "version":  "0.2.4",
+    "version":  "0.2.5",
     "description":  "This is a sample plugin for Obsidian (https://obsidian.md)",
     "main":  "main.js",
     "type":  "module",
     "scripts":  {
                     "dev":  "node esbuild.config.mjs",
                     "build":  "node node_modules/typescript/bin/tsc -noEmit -skipLibCheck \u0026\u0026 node esbuild.config.mjs production",
-                    "version":  "node version-bump.mjs \u0026\u0026 git add manifest.json versions.json",
+                    "version":  "0.2.5",
                     "lint":  "eslint .",
                     "pack":  "node -e \u0027import(\"fs\").then(fs =\u003e { const files = [\"manifest.json\", \"versions.json\", \"package.json\", \"styles.css\"]; const walk = d =\u003e fs.existsSync(d) \u0026\u0026 fs.readdirSync(d, { withFileTypes: true }).forEach(e =\u003e { const p = `${d}/${e.name}`; e.isDirectory() ? walk(p) : files.push(p); }); walk(\"src\"); let out = \"# Plugin Context\\n\"; for (const f of files) { if (fs.existsSync(f)) { const ext = f.split(\".\").pop(); out += `\\n## ${f}\\n\\`\\`\\`${ext}\\n${fs.readFileSync(f, \"utf8\")}\\n\\`\\`\\`\\n`; } } fs.writeFileSync(\"plugin-context.md\", out); console.log(\"Done: plugin-context.md\"); })\u0027"
                 },
